@@ -52,7 +52,7 @@
                 placeholder={''}
                 style={styles.textField}
                 selectionColor={'#bd1919'}
-                
+
               />
           </View>
         </View>
@@ -81,25 +81,24 @@
         margin: 10,
       },
       buttons: {
-        alignItems: "center",
+        alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "#DDDDDD",
+        backgroundColor: 'lightgray',
         borderRadius: 2,
-        fontWeight: "bold",
         height: 20,
         padding: 19,
         width: 90,
         elevation: 3,
       },
       image: {
-        alignItems: "center",
+        alignItems: 'center',
         justifyContent: 'center',
         width: 120,
         height: 120,
       },
       ImageContainer:{
         flex: 1,
-        alignItems: "center",
+        alignItems: 'center',
         paddingBottom: 50,
       },
       headerbar:{
