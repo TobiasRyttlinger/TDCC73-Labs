@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-/// Flutter code sample for RaisedButton
+
 
 import 'package:flutter/material.dart';
 
@@ -40,10 +39,10 @@ class MyStatelessWidget extends StatelessWidget {
          ),
 
         Column(
-          children: List.generate(2, (i){
+          children: List.generate(2, (m){
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(2, (j){
+                children: List.generate(2, (n){
                   return RaisedButton(
                   child: Text("Button"),
                   onPressed: () {});
