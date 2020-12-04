@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Picker,
   StyleSheet,
@@ -13,6 +13,8 @@ import {
   TextInput,
   SafeAreaView,
   ImageBackground,
+  TouchableHighlight,
+
 } from "react-native";
 import FlipCard from "react-native-flip-card";
 const ReactApp = () => {
@@ -24,24 +26,145 @@ const ReactApp = () => {
 
   const [isToggled, setIsToggled] = React.useState(false);
 
+  const [ isNumberPress, setIsPress ] = React.useState(false);
+  const [ isNamePress, setIsNamePress ] = React.useState(false);
+  const [ isMonthPress, setIsMonthPress ] = React.useState(false);
+  const [ isCVVPress, setIsCVVPress ] = React.useState(false);
+  const [ isYearPress, setIsYearPress ] = React.useState(false);
+  const [ imageIndex, setImageIndex ] = React.useState(0);
+
+  var images= [require('./Images/visa.png'),
+              require('./Images/mastercard.png'),
+              require('./Images/discover.png'),
+  ];
 
   const toggle = React.useCallback(
       () => setIsToggled(!isToggled),
       [isToggled, setIsToggled],
+      //console.log('toggle: '+ isToggled),
     );
 
-    const toggleFront = React.useCallback(
-        () => setIsToggled(isToggled),
-        [isToggled, setIsToggled],
+  const toggleFront = React.useCallback(
+      () => setIsToggled(isToggled),
+      [isToggled, setIsToggled],
+
+      );
+//toggle numbers
+  const toggleNumberBorders = React.useCallback(
+      () => setIsPress(true),
+      [isNumberPress, setIsPress],
+
+      );
+  const deToggleNumberBorders = React.useCallback(
+      () => setIsPress(false),
+      [isNumberPress, setIsPress],
+      //console.log('detoggle: '+ isNumberPress),
+      );
+  // toggle month
+  const toggleMonthBorders = React.useCallback(
+      () => setIsMonthPress(true),
+      [isMonthPress, setIsMonthPress],
       );
 
-  var onPressed = false;
+  const deToggleMonthBorders = React.useCallback(
+      () => setIsMonthPress(false),
+      [isMonthPress, setIsMonthPress],
+      //console.log('month: '+isMonthPress),
+      );
+// toggle name
+  const toggleNameBorders = React.useCallback(
+      () => setIsNamePress(true),
+      [isNamePress, setIsNamePress],
 
-  var changeColo = () => {
-    setState({ color: "red" });
-  };
+      );
+
+  const deToggleNameBorders = React.useCallback(
+      () => setIsNamePress(false),
+      [isNamePress, setIsNamePress],
+      //console.log('detoggle: '+ isNamePress),
+      );
+
+    //toggle cvv borders
+  const toggleCVVBorders = React.useCallback(
+      () => setIsCVVPress(true),
+      [isCVVPress, setIsCVVPress],
+          //console.log(isCVVPress),
+      );
+
+  const deToggleCVVBorders = React.useCallback(
+      () => setIsCVVPress(false),
+      [isCVVPress, setIsCVVPress],
+        //console.log('detoggle: '+ isNamePress),
+      );
+    //test to change picker val
+  const toggleYearBorders = React.useCallback(
+        () => setIsYearPress(true),
+        [isYearPress, setIsYearPress],
+            //console.log(isYearPress),
+        );
+
+  const deToggleYearBorders = React.useCallback(
+        () => setIsYearPress(false),
+        [isYearPress, setIsYearPress],
+          //console.log('detoggle: '+ isNamePress),
+        );
+
+
+
+    const numberTrue = React.useCallback(() =>{
+      deToggleNameBorders();
+      toggleNumberBorders();
+      deToggleMonthBorders();
+      deToggleCVVBorders();
+      deToggleYearBorders();
+    }
+    );
+
+    const nameTrue = React.useCallback(() =>{
+      toggleNameBorders();
+      deToggleNumberBorders();
+      deToggleMonthBorders();
+      deToggleCVVBorders();
+      deToggleYearBorders();
+    }
+    );
+
+
+    const monthTrue = React.useCallback(() =>{
+      deToggleNameBorders();
+      deToggleNumberBorders();
+      deToggleCVVBorders();
+      toggleMonthBorders();
+      deToggleYearBorders();
+
+    }
+    );
+
+    const cvvTrue = React.useCallback(() =>{
+      deToggleNameBorders();
+      deToggleNumberBorders();
+      deToggleMonthBorders();
+      toggleCVVBorders();
+      toggle();
+      deToggleYearBorders();
+    }
+    );
+
+    const yearTrue = React.useCallback(() =>{
+      deToggleNameBorders();
+      deToggleNumberBorders();
+      deToggleMonthBorders();
+      deToggleCVVBorders();
+      toggleYearBorders();
+    }
+    );
+
+
+
   const CODE_LENGTH = new Array(20).fill(0);
   const values = cardNumber.split("");
+
+
 
   var HandleNumbers = (text) => {
     let formattedText = text.split(" ").join("");
@@ -63,8 +186,8 @@ const ReactApp = () => {
     return formattedText;
   };
 
-  var TextFun = (text) => {
-    var inputBool = false;
+  var HandleText = (text) => {
+
     let textOutput = text.split(" ").join("");
 
     if (textOutput.length > 0) {
@@ -73,6 +196,10 @@ const ReactApp = () => {
     return textOutput;
   };
 
+  var onChanged = (text) => {
+    // code to remove non-numeric characters from text
+      return text.replace(/[^A-Za-z +]/ig, '')
+  }
 
 
   return (
@@ -97,11 +224,12 @@ const ReactApp = () => {
             <View style={cardStyles.visaChipCont}>
               <View style={cardStyles.chipContainer}><Image style={cardStyles.chip} source={require('./Images/chip.png')}/></View>
 
-              <View style={cardStyles.visaContainer}><Image style={cardStyles.visa} source={require('./Images/visa.png')}/></View>
+              <View style={cardStyles.visaContainer}><Image style={cardStyles.visa} source={values[0]==4 ? images[0]:values[0]==5 ?images[1]:values[0]==6 ?images[2]:images[0]}/></View>
             </View>
 
             <View style={cardStyles.middleContainer}>
-              <View style={cardStyles.numberContainer}>
+
+              <View style={isNumberPress ? cardStyles.numberContainerToggle: cardStyles.numberContainer}>
                 <View style={styles.container}>
                   <View style={styles.wrap}>
                     {CODE_LENGTH.map((v, index) => {
@@ -123,16 +251,17 @@ const ReactApp = () => {
                         );
                       }
                       return (
-                        <Text style={styles.text}>{values[index] || "*"}</Text>
+                        <Text style={styles.text}>{values[index] || "#"}</Text>
                       );
                     })}
                   </View>
                 </View>
               </View>
+
             </View>
 
-            <View style={cardStyles.textCont}>
-              <View style={cardStyles.cardHoldertext}>
+            <View style={cardStyles.textCont} >
+              <View style={isNamePress ? cardStyles.cardHoldertextToggle: cardStyles.cardHoldertext}>
                 <Text style={cardStyles.headerText} numberOfLines={5}>
                   Card Holder
                 </Text>
@@ -141,21 +270,26 @@ const ReactApp = () => {
                   onPress={() => {
                     setcardName("My Changed Text");
                   }}
+
                   style={cardStyles.subText}
                 >
                   {cardName || "Name"}
                 </Text>
               </View>
               <View style={cardStyles.expiresText}>
+                <View style={isMonthPress || isYearPress ? styles.borderExpiresToggle : styles.borderExpires}>
                 <Text style={cardStyles.headerText} numberOfLines={5}>
                   Expires
                 </Text>
                 <Text
                   onPress={() => setcardName("My Changed Text")}
                   style={cardStyles.subText}
+
                 >
                   {selectedMonth || "Month"} {"/"} {selectedYear || "Year"}
+
                 </Text>
+              </View>
               </View>
             </View>
             </ImageBackground>
@@ -186,7 +320,7 @@ const ReactApp = () => {
                   );
                 })}
               </View>
-              <View style={cardStyles.visaContainer}><Image style={cardStyles.visa} source={require('./Images/visa.png')}/></View>
+              <View style={cardStyles.visaContainer}><Image style={cardStyles.visaBack} source={values[0]==4 ? images[0]:values[0]==5 ?images[1]:values[0]==6 ?images[2]:images[0]}/></View>
             </View>
             </ImageBackground>
           </View>
@@ -194,27 +328,24 @@ const ReactApp = () => {
 
       <View style={styles.Container}>
         <View style={{ paddingTop: 60 }}>
-          <Text
-            style={{
-              marginLeft: 20,
-              marginRight: 20,
-              fontWeight: "900",
-              color: "black",
-            }}
-          >
-            Card number
-          </Text>
-          <TextInput
-            value={cardNumber}
-            onChangeText={(cardNumber) =>
-              setCardNumber(HandleNumbers(cardNumber))
-            }
-            onClick={toggleFront}
-            keyboardType="numeric"
-            placeholder={""}
-            style={styles.textField}
-            selectionColor={"black"}
-          />
+          <Text style={styles.cardNumberBox}>Card number</Text>
+
+            <TextInput
+              value={cardNumber}
+              onChangeText={(cardNumber) =>
+                setCardNumber(HandleNumbers(cardNumber))
+              }
+
+              onClick={ toggleFront}
+              onFocus={numberTrue}
+              //onClick={deToggleNameBorders}
+              keyboardType="numeric"
+              placeholder={""}
+              style={isNumberPress ? styles.textFieldToggle: styles.textField}
+              selectionColor={"black"}
+              maxLength={20}
+            />
+
         </View>
 
         <View style={{ justifyContent: "center", paddingTop: 20 }}>
@@ -230,10 +361,12 @@ const ReactApp = () => {
           </Text>
           <TextInput
             value={cardName}
-            onChangeText={(cardName) => setcardName(TextFun(cardName))}
+            onChangeText={(cardName) => setcardName(onChanged(HandleText(cardName)))}
             placeholder={""}
             onClick={toggleFront}
-            style={styles.textField}
+            onFocus={nameTrue}
+            //onBlur={toggleNameBorders}
+            style={isNamePress ? styles.textFieldToggle: styles.textField}
             selectionColor={"black"}
           />
         </View>
@@ -246,20 +379,24 @@ const ReactApp = () => {
           </Text>
         </View>
         <View style={{ flexDirection: "row", paddingLeft: 15, paddingTop: 0 }}>
-          <View style={styles.dropDown}>
+          <View style={isMonthPress ? styles.dropDownToggle : styles.dropDown}>
             <Picker
               selectedValue={selectedMonth}
-              onClick={toggleFront}
+              //onClick={toggleFront}
+              //onClick={monthTrue}
               style={{
                 height: 50,
                 width: 90,
                 borderWidth: 1,
                 borderColor: "gray",
+
               }}
-              onValueChange={(selectedMonth, itemIndex) =>
-                setSelectedMonth(TextFun(selectedMonth))
-              }
+              onValueChange={(selectedMonth) => {setSelectedMonth(HandleText(selectedMonth)); monthTrue()}}
+              //onValueChange={pickerMonthChange()}
+              //={monthTrue}
+
             >
+
               <Picker.Item label="01" value="01" />
               <Picker.Item label="02" value="02" />
               <Picker.Item label="03" value="03" />
@@ -275,20 +412,16 @@ const ReactApp = () => {
             </Picker>
           </View>
 
-          <View style={styles.dropDown}>
+          <View style={isYearPress ? styles.dropDownToggle : styles.dropDown}>
+
             <Picker
               onClick={toggleFront}
               selectedValue={selectedYear}
-              style={{
-                height: 50,
-                width: 100,
-                borderWidth: 1,
-                borderColor: "gray",
-              }}
-              onValueChange={(selectedYear, itemIndex) =>
-                setSelectedYear(TextFun(selectedYear))
-              }
+              style={styles.monthBorder }
+              onValueChange={(selectedYear) => {setSelectedYear(HandleText(selectedYear)); yearTrue()}}
+              //onValueChange={monthTrue}
             >
+              <Picker.Item label="Year" value="" />
               <Picker.Item label="2020" value="2020" />
               <Picker.Item label="2021" value="2021" />
               <Picker.Item label="2022" value="2022" />
@@ -308,10 +441,12 @@ const ReactApp = () => {
             value={userCVV}
             onChangeText={(userCVV) => setUserCVV(HandleCVV(userCVV))}
             placeholder={""}
-            style={styles.textFieldCVV}
+            style={isCVVPress ? styles.textFieldCVVToggle : styles.textFieldCVV}
             selectionColor={"black"}
-            onFocus={toggle}
+            onFocus={cvvTrue}
+
             onSubmitEditing={toggle}
+            maxLength={3}
           />
         </View>
         <View style={styles.upperButtons}>
@@ -329,10 +464,40 @@ const styles = StyleSheet.create({
   face:{
       position:'absolute',
       backgroundColor:'red',
-          borderRadius: 10,
-            height:200,
-                width:300,
+      borderRadius: 10,
+      height:200,
+      width:300,
 
+    },
+    cardNumberBox:{
+      marginLeft: 20,
+      marginRight: 20,
+      fontWeight: "900",
+      color: "black",
+    },
+    borderExpires:{
+      height: 30,
+      width: 70,
+
+    },
+    borderExpiresToggle:{
+      borderWidth:1,
+      height: 30,
+      borderColor: 'gray',
+      width: 70,
+      borderRadius: 5,
+    },
+    monthBorder:{
+      height: 50,
+      width: 110,
+      borderWidth: 1,
+      borderColor: "gray",
+    },
+    monthBorderToggle:{
+      height: 50,
+      width: 90,
+      borderWidth: 2,
+      borderColor: 'blue',
     },
     back:{
       position:'absolute',
@@ -375,6 +540,13 @@ const styles = StyleSheet.create({
     borderColor: "lightgray",
     borderRadius: 2,
   },
+  textFieldCVVToggle: {
+    paddingLeft: 25,
+    margin: 5,
+    borderWidth: 2,
+    borderColor: "lightblue",
+    borderRadius: 5,
+  },
 
   Container: {
     position: "absolute",
@@ -404,15 +576,31 @@ const styles = StyleSheet.create({
     marginRight: 20,
     height: 50,
     justifyContent: "center",
-    borderRadius: 2,
+    borderRadius: 4,
     borderColor: "lightgray",
     borderWidth: 1,
+  },
+  textFieldToggle:{
+    marginLeft: 20,
+    marginRight: 20,
+    height: 50,
+    justifyContent: "center",
+    borderRadius: 4,
+    borderColor: "lightblue",
+    borderWidth: 2,
   },
   dropDown: {
     paddingLeft: 10,
     margin: 5,
     borderWidth: 1,
     borderColor: "lightgray",
+    borderRadius: 2,
+  },
+  dropDownToggle: {
+    paddingLeft: 10,
+    margin: 5,
+    borderWidth: 1,
+    borderColor: "lightblue",
     borderRadius: 2,
   },
 
@@ -476,6 +664,7 @@ const styles = StyleSheet.create({
     borderColor: "lightgray",
     borderRadius: 2,
   },
+
 });
 
 const cardStyles = StyleSheet.create({
@@ -502,10 +691,18 @@ const cardStyles = StyleSheet.create({
     borderRadius: 5,
   },
   visa: {
+    resizeMode: 'contain',
+    height: '500%',
+    width: '500%',
+    paddingLeft: 10,
+
+
+  },
+  visaBack: {
+    resizeMode: 'contain',
     width: 60,
     height: 32,
-    borderRadius: 5,
-    paddingRight: 1,
+
   },
   chipContainer: {
     paddingLeft: 15,
@@ -515,20 +712,35 @@ const cardStyles = StyleSheet.create({
     paddingLeft: 170,
     paddingTop: 14,
   },
-  cardHoldertext: {
-    paddingTop: 33,
+  cardHoldertextToggle: {
+    height: 30,
+    width: 210,
     paddingLeft: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+  },
+  cardHoldertext: {
+    height: 30,
+    width: 210,
+    paddingLeft: 10,
+
   },
   expiresText: {
     position: "absolute",
     fontSize: 80,
     paddingTop: 33,
-    paddingLeft: 230,
+    paddingLeft: 220,
+
   },
   textCont: {
-    width: 256.8,
-    height: 20,
+    paddingTop: 33,
+    paddingLeft: 5,
+    width: 210.8,
+    height: 40,
     flexDirection: "row",
+
+
   },
   textCont1: {
     width: 256.8,
@@ -537,19 +749,30 @@ const cardStyles = StyleSheet.create({
     borderWidth: 1,
   },
   headerText: {
+    marginLeft: 5,
     fontSize: 8,
     color: "#b3b5b4",
     elevation: 10,
   },
   subText: {
+    marginLeft: 5,
     fontSize: 10,
     color: "white",
   },
   numbers: {
     color: "white",
   },
+  numberContainerToggle: {
+    height: 35,
+    borderWidth:1,
+    borderColor: 'gray',
+    borderRadius: 5,
+
+
+  },
   numberContainer: {
-    height: 25,
+    height: 35,
+
   },
   middleContainer: {
     paddingTop: 70,
