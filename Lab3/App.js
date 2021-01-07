@@ -16,7 +16,7 @@ const Stack = createStackNavigator();
 const httpLink = new HttpLink({
   uri: 'https://api.github.com/graphql',
   headers: {
-    Authorization: 'Bearer d49c039d7b31293023e3748da26400300b1b790d'
+    Authorization: 'Bearer token'
   }
 });
 
