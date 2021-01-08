@@ -9,8 +9,8 @@ var imageHeightScale = 0.9//Change height percentage of window size
 var imageWidthScale= 0.9; // Change width percentage of window size
 var pageScroll = true; //Enable or disable locked page scroll
 var horizontal = true; // change between horizontal and vertical scroll
-var spacing = 10;
-var borderRad = 3;
+var spacing = 10; //Spacing between images
+var borderRad = 3; //rounded corners for the images
 //var imageInput = "https://picsum.photos/1120/1242?random";
 const CarouselApp = ({carouselLenght, pageScroll, horizontal, spacing, imageHeightScale, imageWidthScale, imageInput}) => {
 
@@ -27,7 +27,7 @@ const CarouselApp = ({carouselLenght, pageScroll, horizontal, spacing, imageHeig
   //then returns a view element containing the image
   function GenerateImages({ data }) {
     return (
-      <View style={styles.swiper}>
+      <View style={styles.ImageGen}>
         <Image
           source={{ uri: data.image }}
           style={{width: width * imageWidthScale, height: height * imageHeightScale, justifyContent: "center", alignItems: 'center', borderRadius: borderRad,}}
@@ -57,7 +57,7 @@ const CarouselApp = ({carouselLenght, pageScroll, horizontal, spacing, imageHeig
 //Basic css for visual customization.
 //Cusomizable from app using this component
 const styles = StyleSheet.create({
-   swiper:{
+   ImageGen:{
      width: width,
      height: height,
      justifyContent: "center",

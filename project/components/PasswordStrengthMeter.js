@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import {SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,TextInput} from 'react-native';
 
+
+//Start of component
 const PasswordStrengthMeter = ({maxLen, }) => {
 
-
+//States that controls the visuals of the bar and variables that updates in the callback hooks.
 const [password, setPassword] = useState("");
 const [passBarWidth, setPassBarWidth] = useState('0%')
 const [passBarColor, setPassBarColor] = useState('#eceff1')
@@ -11,7 +13,8 @@ const [time, setTime] = useState('')
 const [passBarText, setPassBarText] = useState('')
 const [minLength,setMinLength] = useState(8)
 
-//too short password callback hooks
+//Different password Strength callback hooks to update the bar and texts
+//Too short password callback hooks.
 const shortWidth = React.useCallback(
   () => setPassBarWidth('0%'),
   [passBarWidth, setPassBarWidth],
@@ -81,24 +84,26 @@ const strongText = React.useCallback(
   [passBarText, setPassBarText],
 );
 
-
+//Helper functions to check if the password contains different kinds of symbols.
+//Find lower case symbol
 function isLowerCase(str){
   return str == str.toLowerCase() && str != str.toUpperCase();
  }
-
+//Find Upper case symbol
  function isUpperCase(str){
    return str == str.toUpperCase() && str != str.toLowerCase();
   }
-
+//Find Number
 function hasNumber(str) {
   return /\d/.test(str);
  }
-
+//Find special characters defined in format
 function countSpecial(str){
   var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   return format.test(str) ? true : false;
 }
 
+//Convert seconds to years-months-days-hours-seconds.
 function secondsToYdhms(seconds) {
   seconds = Number(seconds);
   var y = Math.floor(seconds / (3600*24*365));
@@ -114,15 +119,17 @@ function secondsToYdhms(seconds) {
   setTime(yDisplay + dDisplay + hDisplay + mDisplay + sDisplay);
   return yDisplay + dDisplay + hDisplay + mDisplay + sDisplay;
 }
-
+//Function to calculate the enthropy of the password (Main algorithm)
  var calcEntropy = (text) => {
-   var N = 0;
-   var NoG = 20000000000;
+   var N = 0; //Default value
+   var NoG = 20000000000; //Apporximation of how many times a computer can guess a password in one second
 
+   //Blacklisted passwords taken from top 20 frequently used passwords.
    const badPasswords = ['123456', 'qwerty', '123456789','password','1234567',
    '12345678','12345','iloveyou','111111','123123','abc123','qwert123','1q2w3e4r','admin','qwertyuiop',
    '654321','555555','lovely','7777777','888888','princess','dragon','password1','123qwe','666666'];
 
+   //Booleans that uses helper functions to find what is in the password
    var isLowCase = isLowerCase(text);
    var isUpCase = isUpperCase(text);
    var isNumber = hasNumber(text);
@@ -190,29 +197,33 @@ function secondsToYdhms(seconds) {
      N = 0; //No combinations
    }
 
-
-  var L_min = Math.log(NoG * 1000)/Math.log(N); //Estimated shortest lenght for a good password (unnecesary for demenstration purposes)
+  //Estimated shortest lenght for a good password (unnecesary for demenstration purposes)
+  var L_min = Math.log(NoG * 1000)/Math.log(N);
+  //assign the min lenght allowed to the result of L_Min
   setMinLength(Math.floor(L_min));
+  //Calculate the entropy in bits using the lenght and the amount of avaliable symbols N
   var entropy = Math.log2(Math.pow(N,text.length))
-
 
   //Eleminates bad passwords!
   //if(text.length <= L_min){
   //  entropy = 0;
   //}
 
-
+  //Create a varaible to rescale the entropy to a value between 1-5
   var rescaledEntropy = 1;
+  //If statement to remove the possibility of getting good password with a short max lenght.
   if (maxLen <= 15){
     rescaledEntropy = Math.ceil(4*((entropy/Math.log2(Math.pow(N,13)))) +1);
   }
   else {
     rescaledEntropy = Math.ceil(4*((entropy/Math.log2(Math.pow(N,maxLen)))) +1);
   }
-
+  //Convert seconds to years-months-days-hours-seconds format
   var time = secondsToYdhms(Math.pow(N,text.length)/NoG);
 
+  //Check if password is one of the bad passwords that can easily be guessed.
   for (var i=0; i < badPasswords.length; i++) {
+    //If the password is blacklisted put the entropy to weak and time to zero
     if(text == badPasswords[i]){
       rescaledEntropy = 1
       time = 0;
@@ -222,9 +233,8 @@ function secondsToYdhms(seconds) {
    return rescaledEntropy;
  };
 
-
+//Callback function that reaches all the bar and text changing functions to change the visualized strenght using the rescaled entropy.
  const setStrength = React.useCallback((val) =>{
- //console.log(val);
    if(val == 1){
      shortColor();
      shortWidth();
@@ -262,6 +272,7 @@ function secondsToYdhms(seconds) {
           style={styles.input}
           maxLength={maxLen}
           secureTextEntry
+          //On change of text call functions
           onChangeText={(password) => {setPassword(password); setStrength(calcEntropy(password))}}
         />
 
@@ -276,7 +287,7 @@ function secondsToYdhms(seconds) {
       </SafeAreaView>
   );
 };
-
+//Basic css for visuals
 const styles = StyleSheet.create({
 
 
