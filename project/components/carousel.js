@@ -15,9 +15,9 @@ var borderRad = 3;
 const CarouselApp = ({carouselLenght, pageScroll, horizontal, spacing, imageHeightScale, imageWidthScale, imageInput}) => {
 
  //Generate an array of dummy images
-  const imageList = Array.from({ length: carouselLenght }).map((_, i) => {
+  const imageList = Array.from({ length: carouselLenght }).map((_, imageIndex) => {
     return {
-      id: i,
+      id: imageIndex,
       image: `${imageInput}=${i}`,
     };
   });
@@ -38,22 +38,24 @@ const CarouselApp = ({carouselLenght, pageScroll, horizontal, spacing, imageHeig
 
   return (
       <SafeAreaView>
+      //This project is using a Flatlist to render each image
         <FlatList
-          data={imageList}
-          pagingEnabled = {pageScroll}
-          horizontal={horizontal}
-          showsHorizontalScrollIndicator={true}
+          data={imageList} //Gather data from the array with images
+          pagingEnabled = {pageScroll} //Change how the scroll should behave
+          horizontal={horizontal} //Change if the images should align horizontal or vertical
+          showsHorizontalScrollIndicator={true} //Show or disable scrollbar
           ItemSeparatorComponent={
-                    () => <View style={{width: spacing}}/>
+                    () => <View style={{width: spacing}}/> //Add a "empty" space between each items with spacing defined in app
           }
           renderItem={({ item }) => {
-            return <GenerateImages data={item} />; //Reaching each view containing an image.
+            return <GenerateImages data={item} />; //Render each item containing an image.
           }}
         />
       </SafeAreaView>
   );
 };
-
+//Basic css for visual customization.
+//Cusomizable from app using this component
 const styles = StyleSheet.create({
    swiper:{
      width: width,
