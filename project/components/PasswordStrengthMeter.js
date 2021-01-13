@@ -3,7 +3,7 @@ import {SafeAreaView,StyleSheet,ScrollView,View,Text,StatusBar,TextInput} from '
 
 
 //Start of component
-const PasswordStrengthMeter = ({maxLen, }) => {
+const PasswordStrengthMeter = ({maxLen}) => {
 
 //States that controls the visuals of the bar and variables that updates in the callback hooks.
 const [password, setPassword] = useState("");
